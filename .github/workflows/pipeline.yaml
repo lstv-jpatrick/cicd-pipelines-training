@@ -1,0 +1,26 @@
+name: CI Pipeline
+
+# NOTE: Indentation Matters
+on: # workflow trigger event (what action in github should start this pipeline?)
+  push: # whenever someone pushes
+    branches: [ main ] # only run on 'main' branch
+
+jobs: # steps to run
+  build: # name of the job (User defined; not a syntax)
+    runs-on: ubuntu-latest # specify a virtual machine on github's cloud to run your code/test 
+                           # (the code cannot run on itself so it needs a VM) 
+                           # (Analogy: we are borrowing a computer from github ==> completely free for public repositories)
+    steps: # actions to be executed
+      - name: Checkout code # step name - you assign a name so that when pipeline fails, you can check which step failed
+        uses: actions/checkout@v5 # (uses) tells github to run a pre-made plugin/action
+                                  # (actions/checkout@v5) is a script that performs a git clone on the virtual machine declared on "runs-on"
+      - name: Setup Node.js
+        uses: actions/setup-node@v3 # (actions/setup-node@v3) installs Nodejs
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm install # the run: property means typing manual commands instead of using pre-made plugins from the github marketplace
+
+      - name: Run tests
+        run: npm test
